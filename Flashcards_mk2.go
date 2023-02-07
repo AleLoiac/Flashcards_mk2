@@ -1,6 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
 
 type flashcard struct {
 	term       string
@@ -9,24 +14,55 @@ type flashcard struct {
 
 var flashcardDeck []flashcard
 
-func createCard() {
+func createCard(reader *bufio.Reader) {
 
+	var f flashcard
+
+	fmt.Println("The card:")
+Loop1:
+	ter, _ := reader.ReadString('\n')
+	ter = strings.TrimSpace(ter)
+
+	for j := range flashcardDeck {
+		if ter == flashcardDeck[j].term {
+			fmt.Printf("The term \"%v\" already exists. Try again:\n", flashcardDeck[j].term)
+			goto Loop1
+		}
+	}
+
+	fmt.Println("The definition of the card:")
+Loop2:
+	def, _ := reader.ReadString('\n')
+	def = strings.TrimSpace(def)
+
+	for z := range flashcardDeck {
+		if def == flashcardDeck[z].definition {
+			fmt.Printf("The definition \"%v\" already exists. Try again:\n", flashcardDeck[z].definition)
+			goto Loop2
+		}
+	}
+
+	f.term = ter
+	f.definition = def
+
+	flashcardDeck = append(flashcardDeck, f)
 }
 
 func main() {
 
+	flashcardDeck = make([]flashcard, 0)
+
 	for {
 		fmt.Println("Input the action (add, remove, import, export, ask, exit):")
 
-		var command string
-		_, err := fmt.Scan(&command)
-		if err != nil {
-			return
-		}
+		reader := bufio.NewReader(os.Stdin)
+
+		command, _ := reader.ReadString('\n')
+		command = strings.TrimSpace(command)
 
 		switch command {
 		case "add":
-			createCard()
+			createCard(reader)
 		case "remove":
 
 		case "import":
@@ -36,7 +72,8 @@ func main() {
 		case "ask":
 
 		case "exit":
-			fmt.Println("Exiting...")
+			fmt.Println("Bye bye!")
+			fmt.Println(flashcardDeck)
 			return
 		default:
 			fmt.Println("Invalid command, please try again")
