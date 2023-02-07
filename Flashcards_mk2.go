@@ -48,6 +48,21 @@ Loop2:
 	flashcardDeck = append(flashcardDeck, f)
 }
 
+func removeCard(reader *bufio.Reader) {
+
+	fmt.Println("Which card?")
+
+	term, _ := reader.ReadString('\n')
+	term = strings.TrimSpace(term)
+
+	for i := len(flashcardDeck) - 1; i >= 0; i-- {
+		if term == flashcardDeck[i].term {
+			flashcardDeck = append(flashcardDeck[:i], flashcardDeck[i+1:]...)
+			break
+		}
+	}
+}
+
 func main() {
 
 	flashcardDeck = make([]flashcard, 0)
@@ -64,7 +79,7 @@ func main() {
 		case "add":
 			createCard(reader)
 		case "remove":
-
+			removeCard(reader)
 		case "import":
 
 		case "export":
