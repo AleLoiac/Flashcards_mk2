@@ -55,11 +55,17 @@ func removeCard(reader *bufio.Reader) {
 	term, _ := reader.ReadString('\n')
 	term = strings.TrimSpace(term)
 
+	control := false
+
 	for i := len(flashcardDeck) - 1; i >= 0; i-- {
 		if term == flashcardDeck[i].term {
 			flashcardDeck = append(flashcardDeck[:i], flashcardDeck[i+1:]...)
+			control = true
 			break
 		}
+	}
+	if control == false {
+		fmt.Printf("Can't remove \"%v\": there is no such card.\n", term)
 	}
 }
 
