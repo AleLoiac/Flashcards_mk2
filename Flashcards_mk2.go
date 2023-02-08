@@ -69,6 +69,10 @@ func removeCard(reader *bufio.Reader) {
 	}
 }
 
+func exportCards() {
+
+}
+
 func main() {
 
 	flashcardDeck = make([]flashcard, 0)
@@ -89,7 +93,7 @@ func main() {
 		case "import":
 
 		case "export":
-
+			exportCards()
 		case "ask":
 
 		case "exit":
