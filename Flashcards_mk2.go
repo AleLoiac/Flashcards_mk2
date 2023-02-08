@@ -96,8 +96,14 @@ func exportCards(reader *bufio.Reader) {
 		return
 	}
 
-	fmt.Println(string(FlashcardsJSON))
+	var count int
 
+	for range flashcardDeck {
+		count++
+	}
+	fmt.Printf("%v cards have been saved.\n", count)
+
+	// txt export
 	//for _, card := range flashcardDeck {
 	//	_, err = fmt.Fprintln(file, card.term, card.definition) // writes each card of the 'flashcardDeck' slice
 	//	if err != nil {
