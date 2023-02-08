@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 )
@@ -69,7 +70,25 @@ func removeCard(reader *bufio.Reader) {
 	}
 }
 
-func exportCards() {
+func exportCards(reader *bufio.Reader) {
+
+	fmt.Println("File name:")
+
+	fileName, _ := reader.ReadString('\n')
+	fileName = strings.TrimSpace(fileName)
+
+	file, err := os.Create(fileName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	for _, card := range flashcardDeck {
+		_, err = fmt.Fprintln(file, card.term, card.definition) // writes each card of the 'flashcardDeck' slice
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 
 }
 
@@ -93,7 +112,7 @@ func main() {
 		case "import":
 
 		case "export":
-			exportCards()
+			exportCards(reader)
 		case "ask":
 
 		case "exit":
