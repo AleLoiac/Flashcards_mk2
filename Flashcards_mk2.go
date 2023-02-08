@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -9,8 +10,8 @@ import (
 )
 
 type flashcard struct {
-	term       string
-	definition string
+	Term       string `json:"term"`
+	Definition string `json:"definition"`
 }
 
 var flashcardDeck []flashcard
@@ -25,8 +26,8 @@ Loop1:
 	ter = strings.TrimSpace(ter)
 
 	for j := range flashcardDeck {
-		if ter == flashcardDeck[j].term {
-			fmt.Printf("The term \"%v\" already exists. Try again:\n", flashcardDeck[j].term)
+		if ter == flashcardDeck[j].Term {
+			fmt.Printf("The term \"%v\" already exists. Try again:\n", flashcardDeck[j].Term)
 			goto Loop1
 		}
 	}
@@ -37,14 +38,14 @@ Loop2:
 	def = strings.TrimSpace(def)
 
 	for z := range flashcardDeck {
-		if def == flashcardDeck[z].definition {
-			fmt.Printf("The definition \"%v\" already exists. Try again:\n", flashcardDeck[z].definition)
+		if def == flashcardDeck[z].Definition {
+			fmt.Printf("The definition \"%v\" already exists. Try again:\n", flashcardDeck[z].Definition)
 			goto Loop2
 		}
 	}
 
-	f.term = ter
-	f.definition = def
+	f.Term = ter
+	f.Definition = def
 
 	flashcardDeck = append(flashcardDeck, f)
 }
@@ -59,7 +60,7 @@ func removeCard(reader *bufio.Reader) {
 	control := false
 
 	for i := len(flashcardDeck) - 1; i >= 0; i-- {
-		if term == flashcardDeck[i].term {
+		if term == flashcardDeck[i].Term {
 			flashcardDeck = append(flashcardDeck[:i], flashcardDeck[i+1:]...)
 			control = true
 			break
@@ -83,12 +84,26 @@ func exportCards(reader *bufio.Reader) {
 	}
 	defer file.Close()
 
-	for _, card := range flashcardDeck {
-		_, err = fmt.Fprintln(file, card.term, card.definition) // writes each card of the 'flashcardDeck' slice
-		if err != nil {
-			log.Fatal(err)
-		}
+	FlashcardsJSON, err2 := json.Marshal(flashcardDeck)
+	if err2 != nil {
+		fmt.Println(err2)
+		return
 	}
+
+	_, err = file.Write(FlashcardsJSON)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(string(FlashcardsJSON))
+
+	//for _, card := range flashcardDeck {
+	//	_, err = fmt.Fprintln(file, card.term, card.definition) // writes each card of the 'flashcardDeck' slice
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//}
 
 }
 
