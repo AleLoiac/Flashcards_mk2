@@ -145,6 +145,8 @@ func importCards(reader *bufio.Reader) {
 		flashcardDeck = append(flashcardDeck, importedCards[i])
 	}
 
+	fmt.Printf("%v cards have been loaded.\n", len(importedCards))
+
 }
 
 func main() {
