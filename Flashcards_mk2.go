@@ -136,16 +136,13 @@ func importCards(reader *bufio.Reader) {
 
 	fmt.Println(importedCards)
 
-	for _, v := range importedCards {
-		control := false
-		for _, z := range flashcardDeck {
-			if v.Term == z.Term {
-				control = true
+	for i := len(importedCards) - 1; i >= 0; i-- {
+		for j := len(flashcardDeck) - 1; j >= 0; j-- {
+			if importedCards[i].Term == flashcardDeck[j].Term {
+				flashcardDeck = append(flashcardDeck[:j], flashcardDeck[j+1:]...)
 			}
 		}
-		if control == false {
-			flashcardDeck = append(flashcardDeck, v)
-		}
+		flashcardDeck = append(flashcardDeck, importedCards[i])
 	}
 
 }
