@@ -21,6 +21,8 @@ type flashcard struct {
 
 var flashcardDeck []flashcard
 
+var programLog []string
+
 func createCard(reader *bufio.Reader) {
 
 	var f flashcard
@@ -230,17 +232,43 @@ func reset() {
 	fmt.Println("Card statistics have been reset.")
 }
 
+func saveLog(reader *bufio.Reader) {
+
+	fmt.Println("File name:")
+
+	fileName, _ := reader.ReadString('\n')
+	fileName = strings.TrimSpace(fileName)
+
+	file, err := os.Create(fileName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	for _, v := range programLog {
+		_, err = fmt.Fprintln(file, v)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	fmt.Println("The log has been saved.")
+}
+
 func main() {
 
 	flashcardDeck = make([]flashcard, 0)
 
 	for {
-		fmt.Println("Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):")
+		l := fmt.Sprintln("Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):")
+		fmt.Print(l)
+		programLog = append(programLog, l)
 
 		reader := bufio.NewReader(os.Stdin)
 
 		command, _ := reader.ReadString('\n')
 		command = strings.TrimSpace(command)
+		programLog = append(programLog, command)
 
 		switch command {
 		case "add":
@@ -254,17 +282,22 @@ func main() {
 		case "ask":
 			playGame(reader)
 		case "log":
-
+			saveLog(reader)
 		case "hardest card":
 			hardest()
 		case "reset stats":
 			reset()
 		case "exit":
-			fmt.Println("Bye bye!")
+			l1 := fmt.Sprintln("Bye bye!")
+			fmt.Print(l1)
+			programLog = append(programLog, l1)
+
 			fmt.Println(flashcardDeck)
 			return
 		default:
-			fmt.Println("Invalid command, please try again")
+			l2 := fmt.Sprintln("Invalid command, please try again")
+			fmt.Print(l2)
+			programLog = append(programLog, l2)
 		}
 	}
 
