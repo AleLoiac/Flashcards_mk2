@@ -15,6 +15,7 @@ import (
 type flashcard struct {
 	Term       string `json:"term"`
 	Definition string `json:"definition"`
+	Mistakes   int
 }
 
 var flashcardDeck []flashcard
@@ -176,6 +177,7 @@ func playGame(reader *bufio.Reader) {
 		if answer == flashcardDeck[randomInt].Definition {
 			fmt.Println("Correct!")
 		} else {
+			flashcardDeck[randomInt].Mistakes++
 			control := false
 			for j := range flashcardDeck {
 				if answer == flashcardDeck[j].Definition {
@@ -190,6 +192,17 @@ func playGame(reader *bufio.Reader) {
 		}
 	}
 
+}
+
+func hardest() {
+
+}
+
+func reset() {
+	for i := range flashcardDeck {
+		flashcardDeck[i].Mistakes = 0
+	}
+	fmt.Println("Card statistics have been reset.")
 }
 
 func main() {
@@ -215,6 +228,12 @@ func main() {
 			exportCards(reader)
 		case "ask":
 			playGame(reader)
+		case "log":
+
+		case "hardest card":
+			hardest()
+		case "reset stats":
+			reset()
 		case "exit":
 			fmt.Println("Bye bye!")
 			fmt.Println(flashcardDeck)
