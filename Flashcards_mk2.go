@@ -27,26 +27,36 @@ func createCard(reader *bufio.Reader) {
 
 	var f flashcard
 
-	fmt.Println("The card:")
+	l3 := fmt.Sprintln("The card:")
+	fmt.Print(l3)
+	programLog = append(programLog, l3)
 Loop1:
 	ter, _ := reader.ReadString('\n')
 	ter = strings.TrimSpace(ter)
+	programLog = append(programLog, ter)
 
 	for j := range flashcardDeck {
 		if ter == flashcardDeck[j].Term {
-			fmt.Printf("The term \"%v\" already exists. Try again:\n", flashcardDeck[j].Term)
+			l4 := fmt.Sprintf("The term \"%v\" already exists. Try again:\n", flashcardDeck[j].Term)
+			fmt.Print(l4)
+			programLog = append(programLog, l4)
 			goto Loop1
 		}
 	}
 
-	fmt.Println("The definition of the card:")
+	l5 := fmt.Sprintln("The definition of the card:")
+	fmt.Print(l5)
+	programLog = append(programLog, l5)
 Loop2:
 	def, _ := reader.ReadString('\n')
 	def = strings.TrimSpace(def)
+	programLog = append(programLog, def)
 
 	for z := range flashcardDeck {
 		if def == flashcardDeck[z].Definition {
-			fmt.Printf("The definition \"%v\" already exists. Try again:\n", flashcardDeck[z].Definition)
+			l6 := fmt.Sprintf("The definition \"%v\" already exists. Try again:\n", flashcardDeck[z].Definition)
+			fmt.Print(l6)
+			programLog = append(programLog, l6)
 			goto Loop2
 		}
 	}
@@ -56,15 +66,20 @@ Loop2:
 
 	flashcardDeck = append(flashcardDeck, f)
 
-	fmt.Printf("The pair (\"%v\":\"%v\") has been added.\n", f.Term, f.Definition)
+	l7 := fmt.Sprintf("The pair (\"%v\":\"%v\") has been added.\n", f.Term, f.Definition)
+	fmt.Print(l7)
+	programLog = append(programLog, l7)
 }
 
 func removeCard(reader *bufio.Reader) {
 
-	fmt.Println("Which card?")
+	l8 := fmt.Sprintln("Which card?")
+	fmt.Print(l8)
+	programLog = append(programLog, l8)
 
 	term, _ := reader.ReadString('\n')
 	term = strings.TrimSpace(term)
+	programLog = append(programLog, term)
 
 	control := false
 
@@ -72,21 +87,28 @@ func removeCard(reader *bufio.Reader) {
 		if term == flashcardDeck[i].Term {
 			flashcardDeck = append(flashcardDeck[:i], flashcardDeck[i+1:]...)
 			control = true
-			fmt.Println("The card has been removed.The card has been removed.")
+			l9 := fmt.Sprintln("The card has been removed.The card has been removed.")
+			fmt.Print(l9)
+			programLog = append(programLog, l9)
 			break
 		}
 	}
 	if control == false {
-		fmt.Printf("Can't remove \"%v\": there is no such card.\n", term)
+		l10 := fmt.Sprintf("Can't remove \"%v\": there is no such card.\n", term)
+		fmt.Print(l10)
+		programLog = append(programLog, l10)
 	}
 }
 
 func exportCards(reader *bufio.Reader) {
 
-	fmt.Println("File name:")
+	l11 := fmt.Sprintln("File name:")
+	fmt.Print(l11)
+	programLog = append(programLog, l11)
 
 	fileName, _ := reader.ReadString('\n')
 	fileName = strings.TrimSpace(fileName)
+	programLog = append(programLog, fileName)
 
 	file, err := os.Create(fileName)
 	if err != nil {
@@ -111,7 +133,9 @@ func exportCards(reader *bufio.Reader) {
 	for range flashcardDeck {
 		count++
 	}
-	fmt.Printf("%v cards have been saved.\n", count)
+	l12 := fmt.Sprintf("%v cards have been saved.\n", count)
+	fmt.Print(l12)
+	programLog = append(programLog, l12)
 
 	// txt export
 	//for _, card := range flashcardDeck {
@@ -125,14 +149,19 @@ func exportCards(reader *bufio.Reader) {
 
 func importCards(reader *bufio.Reader) {
 
-	fmt.Println("File name:")
+	l13 := fmt.Sprintln("File name:")
+	fmt.Print(l13)
+	programLog = append(programLog, l13)
 
 	fileName, _ := reader.ReadString('\n')
 	fileName = strings.TrimSpace(fileName)
+	programLog = append(programLog, fileName)
 
 	file, err := os.Open(fileName)
 	if err != nil {
-		fmt.Println("File not found.")
+		l14 := fmt.Sprintln("File not found.")
+		fmt.Print(l14)
+		programLog = append(programLog, l14)
 	}
 	defer file.Close()
 
@@ -155,16 +184,21 @@ func importCards(reader *bufio.Reader) {
 		flashcardDeck = append(flashcardDeck, importedCards[i])
 	}
 
-	fmt.Printf("%v cards have been loaded.\n", len(importedCards))
+	l15 := fmt.Sprintf("%v cards have been loaded.\n", len(importedCards))
+	fmt.Print(l15)
+	programLog = append(programLog, l15)
 
 }
 
 func playGame(reader *bufio.Reader) {
 
-	fmt.Println("How many times to ask?")
+	l16 := fmt.Sprintln("How many times to ask?")
+	fmt.Print(l16)
+	programLog = append(programLog, l16)
 
 	num, _ := reader.ReadString('\n')
 	num = strings.TrimSpace(num)
+	programLog = append(programLog, num)
 
 	number, _ := strconv.Atoi(num)
 
@@ -173,24 +207,33 @@ func playGame(reader *bufio.Reader) {
 		rand.Seed(time.Now().UnixNano())
 		randomInt := rand.Intn(len(flashcardDeck))
 
-		fmt.Printf("Print the definition of \"%v\":\n", flashcardDeck[randomInt].Term)
+		l17 := fmt.Sprintf("Print the definition of \"%v\":\n", flashcardDeck[randomInt].Term)
+		fmt.Print(l17)
+		programLog = append(programLog, l17)
 		answer, _ := reader.ReadString('\n')
 		answer = strings.TrimSpace(answer)
+		programLog = append(programLog, answer)
 
 		if answer == flashcardDeck[randomInt].Definition {
-			fmt.Println("Correct!")
+			l18 := fmt.Sprintln("Correct!")
+			fmt.Print(l18)
+			programLog = append(programLog, l18)
 		} else {
 			flashcardDeck[randomInt].Mistakes++
 			control := false
 			for j := range flashcardDeck {
 				if answer == flashcardDeck[j].Definition {
-					fmt.Printf("Wrong. The right answer is \"%v\", but your definition is correct for \"%v\".\n", flashcardDeck[randomInt].Definition, flashcardDeck[j].Term)
+					l19 := fmt.Sprintf("Wrong. The right answer is \"%v\", but your definition is correct for \"%v\".\n", flashcardDeck[randomInt].Definition, flashcardDeck[j].Term)
+					fmt.Print(l19)
+					programLog = append(programLog, l19)
 					control = true
 					break
 				}
 			}
 			if control == false {
-				fmt.Printf("Wrong. The right answer is \"%v\".\n", flashcardDeck[randomInt].Definition)
+				l20 := fmt.Sprintf("Wrong. The right answer is \"%v\".\n", flashcardDeck[randomInt].Definition)
+				fmt.Print(l20)
+				programLog = append(programLog, l20)
 			}
 		}
 	}
@@ -213,15 +256,25 @@ func hardest() {
 		}
 	}
 	if maxErrors == 0 {
-		fmt.Println("There are no cards with errors.")
+		l21 := fmt.Sprintln("There are no cards with errors.")
+		fmt.Print(l21)
+		programLog = append(programLog, l21)
 	} else if len(hardestCards) == 1 {
-		fmt.Printf("The hardest card is \"%v\". You have %v errors answering it\n", hardestCards[0].Term, maxErrors)
+		l22 := fmt.Sprintf("The hardest card is \"%v\". You have %v errors answering it\n", hardestCards[0].Term, maxErrors)
+		fmt.Print(l22)
+		programLog = append(programLog, l22)
 	} else {
-		fmt.Printf("The hardest cards are ")
+		l23 := fmt.Sprintf("The hardest cards are ")
+		fmt.Print(l23)
+		programLog = append(programLog, l23)
 		for i := range hardestCards {
-			fmt.Printf("\"%v\" ", hardestCards[i].Term)
+			l24 := fmt.Sprintf("\"%v\" ", hardestCards[i].Term)
+			fmt.Print(l24)
+			programLog = append(programLog, l24)
 		}
-		fmt.Printf("You have %v errors answering them.\n", maxErrors)
+		l25 := fmt.Sprintf("You have %v errors answering them.\n", maxErrors)
+		fmt.Print(l25)
+		programLog = append(programLog, l25)
 	}
 }
 
@@ -229,15 +282,20 @@ func reset() {
 	for i := range flashcardDeck {
 		flashcardDeck[i].Mistakes = 0
 	}
-	fmt.Println("Card statistics have been reset.")
+	l26 := fmt.Sprintln("Card statistics have been reset.")
+	fmt.Print(l26)
+	programLog = append(programLog, l26)
 }
 
 func saveLog(reader *bufio.Reader) {
 
-	fmt.Println("File name:")
+	l27 := fmt.Sprintln("File name:")
+	fmt.Print(l27)
+	programLog = append(programLog, l27)
 
 	fileName, _ := reader.ReadString('\n')
 	fileName = strings.TrimSpace(fileName)
+	programLog = append(programLog, fileName)
 
 	file, err := os.Create(fileName)
 	if err != nil {
@@ -252,7 +310,9 @@ func saveLog(reader *bufio.Reader) {
 		}
 	}
 
-	fmt.Println("The log has been saved.")
+	l28 := fmt.Sprintln("The log has been saved.")
+	fmt.Print(l28)
+	programLog = append(programLog, l28)
 }
 
 func main() {
