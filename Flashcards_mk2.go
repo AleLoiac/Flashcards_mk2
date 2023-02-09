@@ -5,8 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 )
 
 type flashcard struct {
@@ -48,6 +51,8 @@ Loop2:
 	f.Definition = def
 
 	flashcardDeck = append(flashcardDeck, f)
+
+	fmt.Printf("The pair (\"%v\":\"%v\") has been added.\n", f.Term, f.Definition)
 }
 
 func removeCard(reader *bufio.Reader) {
@@ -63,6 +68,7 @@ func removeCard(reader *bufio.Reader) {
 		if term == flashcardDeck[i].Term {
 			flashcardDeck = append(flashcardDeck[:i], flashcardDeck[i+1:]...)
 			control = true
+			fmt.Println("The card has been removed.The card has been removed.")
 			break
 		}
 	}
@@ -122,7 +128,7 @@ func importCards(reader *bufio.Reader) {
 
 	file, err := os.Open(fileName)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("File not found.")
 	}
 	defer file.Close()
 
@@ -149,6 +155,43 @@ func importCards(reader *bufio.Reader) {
 
 }
 
+func playGame(reader *bufio.Reader) {
+
+	fmt.Println("How many times to ask?")
+
+	num, _ := reader.ReadString('\n')
+	num = strings.TrimSpace(num)
+
+	number, _ := strconv.Atoi(num)
+
+	for i := 0; i < number; i++ {
+
+		rand.Seed(time.Now().UnixNano())
+		randomInt := rand.Intn(len(flashcardDeck))
+
+		fmt.Printf("Print the definition of \"%v\":\n", flashcardDeck[randomInt].Term)
+		answer, _ := reader.ReadString('\n')
+		answer = strings.TrimSpace(answer)
+
+		if answer == flashcardDeck[randomInt].Definition {
+			fmt.Println("Correct!")
+		} else {
+			control := false
+			for j := range flashcardDeck {
+				if answer == flashcardDeck[j].Definition {
+					fmt.Printf("Wrong. The right answer is \"%v\", but your definition is correct for \"%v\".\n", flashcardDeck[randomInt].Definition, flashcardDeck[j].Term)
+					control = true
+					break
+				}
+			}
+			if control == false {
+				fmt.Printf("Wrong. The right answer is \"%v\".\n", flashcardDeck[randomInt].Definition)
+			}
+		}
+	}
+
+}
+
 func main() {
 
 	flashcardDeck = make([]flashcard, 0)
@@ -171,7 +214,7 @@ func main() {
 		case "export":
 			exportCards(reader)
 		case "ask":
-
+			playGame(reader)
 		case "exit":
 			fmt.Println("Bye bye!")
 			fmt.Println(flashcardDeck)
