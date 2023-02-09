@@ -210,7 +210,7 @@ func main() {
 	flashcardDeck = make([]flashcard, 0)
 
 	for {
-		fmt.Println("Input the action (add, remove, import, export, ask, exit):")
+		fmt.Println("Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):")
 
 		reader := bufio.NewReader(os.Stdin)
 
