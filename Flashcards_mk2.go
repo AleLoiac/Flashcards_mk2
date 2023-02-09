@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math"
 	"math/rand"
 	"os"
 	"strconv"
@@ -196,6 +197,30 @@ func playGame(reader *bufio.Reader) {
 
 func hardest() {
 
+	maxErrors := 0
+	for i := 0; i <= len(flashcardDeck)-1; i++ {
+		maxErrors = int(math.Max(float64(flashcardDeck[i].Mistakes), float64(maxErrors)))
+	}
+	//fmt.Println(maxErrors)
+
+	var hardestCards []flashcard
+	hardestCards = make([]flashcard, 0)
+	for i := range flashcardDeck {
+		if flashcardDeck[i].Mistakes == maxErrors {
+			hardestCards = append(hardestCards, flashcardDeck[i])
+		}
+	}
+	if maxErrors == 0 {
+		fmt.Println("There are no cards with errors.")
+	} else if len(hardestCards) == 1 {
+		fmt.Printf("The hardest card is \"%v\". You have %v errors answering it\n", hardestCards[0].Term, maxErrors)
+	} else {
+		fmt.Printf("The hardest cards are ")
+		for i := range hardestCards {
+			fmt.Printf("\"%v\" ", hardestCards[i].Term)
+		}
+		fmt.Printf("You have %v errors answering them.\n", maxErrors)
+	}
 }
 
 func reset() {
