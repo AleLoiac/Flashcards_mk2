@@ -113,6 +113,43 @@ func exportCards(reader *bufio.Reader) {
 
 }
 
+func importCards(reader *bufio.Reader) {
+
+	fmt.Println("File name:")
+
+	fileName, _ := reader.ReadString('\n')
+	fileName = strings.TrimSpace(fileName)
+
+	file, err := os.Open(fileName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	var importedCards []flashcard
+	decoder := json.NewDecoder(file)
+	err2 := decoder.Decode(&importedCards)
+	if err2 != nil {
+		fmt.Println(err2)
+		return
+	}
+
+	fmt.Println(importedCards)
+
+	for _, v := range importedCards {
+		control := false
+		for _, z := range flashcardDeck {
+			if v.Term == z.Term {
+				control = true
+			}
+		}
+		if control == false {
+			flashcardDeck = append(flashcardDeck, v)
+		}
+	}
+
+}
+
 func main() {
 
 	flashcardDeck = make([]flashcard, 0)
@@ -131,7 +168,7 @@ func main() {
 		case "remove":
 			removeCard(reader)
 		case "import":
-
+			importCards(reader)
 		case "export":
 			exportCards(reader)
 		case "ask":
