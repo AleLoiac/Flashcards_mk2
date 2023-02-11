@@ -88,7 +88,7 @@ func removeCard(reader *bufio.Reader) {
 		if term == flashcardDeck[i].Term {
 			flashcardDeck = append(flashcardDeck[:i], flashcardDeck[i+1:]...)
 			control = true
-			l9 := fmt.Sprintln("The card has been removed.The card has been removed.")
+			l9 := fmt.Sprintln("The card has been removed.")
 			fmt.Print(l9)
 			programLog = append(programLog, l9)
 			break
