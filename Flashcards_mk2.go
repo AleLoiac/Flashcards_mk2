@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
 	"math"
@@ -315,9 +316,93 @@ func saveLog(reader *bufio.Reader) {
 	programLog = append(programLog, l28)
 }
 
+func cliImport(name string) {
+
+	if name == "" {
+		return
+	}
+
+	file, err := os.Open(name)
+	if err != nil {
+		l14 := fmt.Sprintln("File not found.")
+		fmt.Print(l14)
+		programLog = append(programLog, l14)
+	}
+	defer file.Close()
+
+	var importedCards []flashcard
+	decoder := json.NewDecoder(file)
+	err2 := decoder.Decode(&importedCards)
+	if err2 != nil {
+		fmt.Println(err2)
+		return
+	}
+
+	//fmt.Println(importedCards)
+
+	for i := len(importedCards) - 1; i >= 0; i-- {
+		for j := len(flashcardDeck) - 1; j >= 0; j-- {
+			if importedCards[i].Term == flashcardDeck[j].Term {
+				flashcardDeck = append(flashcardDeck[:j], flashcardDeck[j+1:]...)
+			}
+		}
+		flashcardDeck = append(flashcardDeck, importedCards[i])
+	}
+
+	l15 := fmt.Sprintf("%v cards have been loaded.\n", len(importedCards))
+	fmt.Print(l15)
+	programLog = append(programLog, l15)
+
+}
+
+func cliExport(name string) {
+
+	if name == "" {
+		return
+	}
+
+	file, err := os.Create(name)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	FlashcardsJSON, err2 := json.Marshal(flashcardDeck)
+	if err2 != nil {
+		fmt.Println(err2)
+		return
+	}
+
+	_, err = file.Write(FlashcardsJSON)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	var count int
+
+	for range flashcardDeck {
+		count++
+	}
+	l12 := fmt.Sprintf("%v cards have been saved.\n", count)
+	fmt.Print(l12)
+	programLog = append(programLog, l12)
+
+}
+
 func main() {
 
 	flashcardDeck = make([]flashcard, 0)
+
+	importFileName := flag.String("import_from", "", "Enter file name")
+
+	exportFileName := flag.String("export_to", "", "Enter file name")
+
+	flag.Parse()
+
+	cliImport(*importFileName)
+
+	defer cliExport(*exportFileName)
 
 	for {
 		l := fmt.Sprintln("Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):")
