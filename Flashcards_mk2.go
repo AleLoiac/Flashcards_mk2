@@ -404,6 +404,7 @@ func main() {
 
 	defer cliExport(*exportFileName)
 
+	//main loop
 	for {
 		l := fmt.Sprintln("Input the action (add, remove, import, export, ask, exit, log, hardest card, reset stats):")
 		fmt.Print(l)
